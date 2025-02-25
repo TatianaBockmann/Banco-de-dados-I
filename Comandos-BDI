@@ -1,0 +1,243 @@
+Data: '10/10/20' ou to_date(‘10/10/2024’, ‘dd/mm/rrrr’)
+13.08.2024
+drop table cidade; (deleta a tabela)
+
+Select * from Cliente 
+
+Order by nome; contrario desc;
+
+Order by idade, nome;
+
+27.08
+Constraint CLIENTE_PK
+Primary Key (IdCliente));
+
+Espaço vazio tabela: Null
+
+Alterar um registro:
+Update Cidade Set nomeCidade=’Floripa’
+Where idcidade=10;
+Select from Cidade
+
+Trocar a cidade de código 2 para Rio de Janeiro, RJ
+Update Cidade Set 
+NomeCidade=’Rio de Janeiro’,
+UF=’RJ’
+Where idCidade=2;
+
+Apagar registro
+Delete from Cidade where IdCidade=20;
+
+Exemplos com select mais usados:
+a)	Seleciona as cidades do RS:
+Select*from cidade Where UF=’RS’;
+
+b)	Seleciona as cidades que são do RS e de SP:
+Select * from Cidade
+Where UF in(‘RS,’SP’);
+
+c)	Seleciona as cidades que não são do RS:
+Select * from Cidade Where UF not in (‘RS’);
+Select * from Cidade where UF <>’RS’;
+
+d)	Comando like
+Seleciona todas as cidades que começam com s:
+Select * from Cidade Where nomeCidade like ‘S%’;
+Tbem: cidades que tenham a letra l, e cidades que terminam em o.
+
+e)	Upper (maiúsculo) e lower (minúsculo)
+Usando like e upper
+Selecione as cidades que tenham a letra P
+Select * from Cidade Where Upper (nomeCidade) like ‘%P%’ ;
+
+Usando like e lower
+Select * from Cidade where lower (nomeCidade) like ‘%p%’;
+
+
+f)	Selecione as cidades com código abaixo de 10:
+Select * from Cidade Where idCidade < 10;
+
+g)	Selecione cidades com Código maior ou igual a 11:
+Select * from Cidade Where idCidade >=11;
+
+h)	Between (entre)
+Select * from Cidade where idCidade between 1 and 10; 
+Ou idCidade >=1 and idCidade <=10;
+
+i)	Count (Contador)
+Conta todos os registros
+Select count(*) from Cidade; (* lê a informação)
+Ou
+Select Count(1) from Cidade; (1 mais rápido, apenas conta)
+
+Conta todos os registros que são do RS
+Select Count(1) from Cidade where UF=’RS’;
+Ou 
+Select count(1) from Cidade where UF in (‘RS’, ‘SP’);
+
+
+Conta todos os registros agrupados pela UF
+Select UF, Count(*) contador from Cidade
+Group by UF;
+Obs.: Contador é um apelido, td que está fora do Count vai no group by.
+
+Apelido 
+Select * from Cidade ||select IdCidade cod, NomeCidade Nome from Cidade;
+Apelidos: cod e nome.
+
+Agrupar: group by
+Count + informação preciso usar o group by
+Select UF, Count(*) from Cidade group by UF;
+Select Pais, count(*) from Cidade group by Pais;
+
+Exemplo: conte quantas pessoas são homens e quantas são mulheres
+Select Count(*), sexo from Pessoa group by sexo;
+
+Create table Pessoa
+(IdPessoa number(7) Not Null,
+NomePessoa varchar 2(120) Not Null,….
+…
+Constraint Pessoa_PK
+Primary Key (IdPessoa),
+
+Constraint Pessoa_Cidade_FK Foreign Key
+(IdCidade) References Cidade (IdCidade));
+
+Onde tem o pé de galinha buscará o id onde está o 1.
+
+PK Primary Key ou chave primária é a coluna utilizada pelo BD para referir cada linha de forma única. Por definição, tabelas de um BD relacional não podem ter chaves primárias repetidas ou nulas.
+
+FK Foreign Key ou chave estrangeira, ou chave externa, é a chave que permite a referência a registros oriundos de outras tabelas. Ou seja, é o campo ou conjunto de campos que compõem a chave primária de uma outra tabela.
+FK é a representação de um relacionamento entre tabelas.
+A utilização da chave estrangeira possibilita a implementação da integridade de dados diretamente no BD, conhecida como integridade referencial.
+
+Pé de galinha: relacionamento é uma associação entre entidades que deve ser definido quando um tipo de entidade se refere a outro tipo de entidade. N= várias entidades associadas a uma outra entidade. 
+
+
+
+1 de out.
+
+1) Insira duas cidades na tabela cidade;
+insert into cidade values (1, 'Novo Hamburgo', 'RS', 'Brasil');
+insert into cidade values (2, 'São Paulo', 'SP', 'Brasil');
+
+
+2) Altere o nome e cpf do cliente para 'João', 90009999 da entrega de código 100;
+update entrega set cpf = 90009999, Nome='João' where identrega=100;
+
+3) Delete os produtos da entrega da entrega de código 2;
+delete produtosentrega where identrega = 2;
+ou 
+delete from produtosentrega where identrega = 2;
+
+4) Delete os produtos da entrega desde que a quantidade seja inferior a 2 unidades.
+delete produtosentrega where qtd <2;
+ou
+delete from produtosentrega where qtd <2;
+
+5) Conte quantas entregas estão cadastradas.
+select count(1) from entrega;
+
+6) selecione as cidades da Região Sul do Brasil.
+select * from cidade where uf in ('RS','SC', 'PR');
+
+7) Selecione as entregas dos clientes que começam com o nome João.
+select * from entrega where nome like 'João%'
+ou
+select * from entrega where upper(nome) like 'JOÃO%'
+
+8) Mostre as entregas que contém 'Tênis', 'Bola', 'Meia'
+Select * from entrega, produtosentrega
+where entrega.identrega = produtosentrega.identrega
+and produtosentrega.descricaoproduto in ('Tênis', 'Bola', 'Meia');
+
+9) Mostre as entregas onde a cidade de residência é a mesma da cidade de entrega
+select * from entrega where idcidade = idcidadeentrega;
+
+10) Faça um select mostrando o IdEntrega, nome do cliente, idcidade, idcidadeentrega.
+select entrega.identrega, entrega.nome,  entrega.idcidade, entrega.idcidadeentrega
+from entrega;
+
+11) Faça um select mostrando o IdEntrega, nome do cliente, idcidade, nome da cidade residência, idcidadeentrega, nome da cidade de entrega.
+
+select entrega.identrega, entrega.nome,  entrega.idcidade, cidade.nomecidade, entrega.idcidadeentrega, cidadeent.nomecidade
+from entrega, cidade, cidadeent
+where  cidade.idcidade = entrega.idcidade 
+and       cidadeent.idcidade = entrega.idcidadeentrega;
+
+12) Conte quantos clientes cada cidade possui (use o campo entrega.idcidade)
+select count(1), entrega.idcidade, cidade.nomecidade
+from entrega, cidade
+where entrega.idcidade = cidade.idcidade
+group by 
+entrega.idcidade, cidade.nomecidade;
+
+13) Conte quantos clientes cada cidade possui (use o campo entrega.idcidade), mostre apenas as cidades com mais de 3 entregas. Use o comando having.
+select count(1), entrega.idcidade, cidade.nomecidade
+from entrega, cidade
+where entrega.idcidade = cidade.idcidade
+group by  entrega.idcidade, cidade.nomecidade
+having count(1)> 3;
+
+14) Faça uma cópia da tabela cidade copiando apenas as cidades que não são do Rio Grande do Sul.
+create table novatabela as select * from cidade where UF <> 'RS';
+ou
+create table novatabela as select * from cidade where UF not in 'RS';
+
+15)  Mostre as entregas onde a data da entrega está vazia (nula).
+select * from entrega where dataentrega is null;
+
+
+Este comando não funciona!!!  -->> select * from entrega where dataentrega = null;
+
+Sintaxe GROUP BY
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+ORDER BY column_name(s);
+
+Comando HAVING
+Em algumas instâncias, talvez você deseje excluir linhas individuais de grupos (usando uma cláusula WHERE) antes de aplicar um critério aos grupos como um todo (usando uma cláusula HAVING).
+Uma cláusula HAVING é como uma cláusula WHERE, a diferença é que ela se aplica somente a grupos como um todo (ou seja, as linhas do conjunto de resultados que representam grupos), enquanto a cláusula WHERE se aplica a linhas individuais. Uma consulta pode conter uma cláusula WHERE e uma cláusula HAVING. Nesse caso:
+•	A cláusula WHERE é aplicada primeiro às linhas individuais nas tabelas ou objetos com valor de tabela no painel Diagrama. Apenas as linhas que atendem os critérios na cláusula WHERE são agrupadas.
+•	A cláusula HAVING é aplicada às linhas no conjunto de resultados. Somente os grupos que atendem os critérios de HAVING são exibidos na saída da consulta. Você pode aplicar apenas uma cláusula HAVING em colunas que também são exibidas na cláusula GROUP BY ou em uma função de agregação.
+
+https://pt.stackoverflow.com/questions/6441/qual-%C3%A9-a-diferen%C3%A7a-entre-inner-join-e-outer-join
+
+https://www.devmedia.com.br/arquitetura-de-um-sgbd/25007
+
+Primeiro criar tabelas que tem Id em outras.
+https://www.devmedia.com.br/sql-clausula-where/37645
+
+JOIN
+https://www.devmedia.com.br/entendendo-a-instrucao-join/32936
+https://www.devmedia.com.br/sql-inner-join/41230
+https://www.devmedia.com.br/sql-left-join/41179
+
+ https://www.devmedia.com.br/clausulas-inner-join-left-join-e-right-join-no-sql-server/18930#1
+INNER JOI
+Essa cláusula trará em sua consulta os dados que são comuns às duas tabelas.
+Join left para trazer todos os produtos com a informação da categoria referente, independente se há ou não categoria vinculada, podemos utilizar o LEFT JOIN.
+RIGHT JOIN
+Ao contrário do LEFT JOIN, a cláusula RIGHT JOIN ou RIGHT OUTER JOIN retorna todos os dados encontrados na tabela à direita de JOIN. Caso não existam dados associados entre as tabelas à esquerda e à direita de JOIN, serão retornados valores nulos.
+Suponhamos que a posição das tabelas usadas nos exemplos anteriores foi trocada. Se mesmo assim desejamos obter o mesmo resultado obtido anteriormente, podemos usar a cláusula RIGHT JOIN, assim iremos conseguir tanto os dados relacionados como os não relacionados disponíveis na tabela à direita da cláusula JOIN.
+
+FULL JOIN
+Todas as linhas de dados da tabela à esquerda de JOIN e da tabela à direita serão retornadas pela cláusula FULL JOIN ou FULL OUTER JOIN. Caso uma linha de dados não esteja associada a qualquer linha da outra tabela, os valores das colunas a lista de seleção serão nulos. Caso contrário, os valores obtidos serão baseados nas tabelas usadas como referência.
+
+CROSS JOIN
+Todos os dados da tabela à esquerda de JOIN são cruzados com os dados da tabela à direita de JOIN por meio do CROSS JOIN, também conhecido como produto cartesiano. É possível cruzarmos informações de duas ou mais tabelas.
+
+
+
+É importante salientar que as tabelas devem ser associadas em pares, embora seja possível usar um único comando para juntar várias tabelas. Uma das formas mais usadas é a associação da chave primária da primeira tabela com a chave estrangeira da segunda.
+Diferentes tipos de associação podem ser escritos com a ajuda das cláusulas JOIN e WHERE. Outro exemplo: podemos obter apenas os dados relacionados entre duas tabelas associadas. Também podemos combinar duas tabelas de forma que seus dados relacionados e os não-relacionados sejam obtidos.
+As tabelas podem, ainda, ser associadas de modo que sejam gerados não apenas dados relacionados entre elas, mas também dados não relacionados da tabela encontrada à esquerda ou à direita da cláusula JOIN.
+Também podemos associar as tabelas por meio das cláusulas JOIN e WHERE para a obtenção do produto cartesiano, que nada mais é do que um conjunto de resultados com todas as linhas que são geradas a partir desta associação.
+A cláusula JOIN permite que os dados de várias tabelas sejam combinados com base na relação existente entre elas. Por meio dessa cláusula, os dados de uma tabela são usados para selecionar os dados pertencentes à outra tabela.
+Com a cláusula JOIN, podemos especificar quais colunas das tabelas serão associadas. Para isso, será preciso definir uma chave estrangeira de uma tabela e a chave relacionada em outra tabela.
+Os valores pertencentes às colunas das tabelas associadas podem ser comparados entre si por meio de um operador lógico definido pela cláusula JOIN e usada pelo operador ON, como o sinal de igual (=).
+
+INNER JOIN essa cláusula trará em sua consulta os dados que são comuns às duas tabelas, conforme ilustra a Figura 1.
+LEFT JOIN retorna todos os registros da tabela à esquerda (Tabela 1) e os registros correspondentes da tabela à direita (Tabela 2). O resultado é NULL do lado direito, se não houver correspondência, como ilustra a Figura 1.
